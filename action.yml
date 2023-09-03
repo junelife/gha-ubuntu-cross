@@ -25,7 +25,7 @@ runs:
             deb [arch=$ARCH] http://ports.ubuntu.com/ $CODENAME multiverse \n\
             deb [arch=$ARCH] http://ports.ubuntu.com/ $CODENAME-updates multiverse \n\
             deb [arch=$ARCH] http://ports.ubuntu.com/ $CODENAME-backports main restricted universe multiverse \n' > $APTFILE"; fi
-        sudo apt-get update
+        sudo apt-get update --fix-missing || true
         sudo apt-get install \
             libstdc++6-$ARCH-cross \
             libc6-dev-$ARCH-cross \
