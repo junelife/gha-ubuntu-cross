@@ -16,7 +16,6 @@ runs:
         set -x
         export CODENAME=$(lsb_release -c -s)
         export APTFILE=/etc/apt/sources.list.d/$ARCH-cross-compile-sources.list
-        cat /etc/apt/sources.list
         sudo dpkg --add-architecture $ARCH
         if [ $ARCH != amd64 ] && [ $ARCH != i386 ]; then \
           sudo bash -c "echo -e '\
@@ -27,6 +26,14 @@ runs:
             deb [arch=$ARCH] http://ports.ubuntu.com/ $CODENAME multiverse \n\
             deb [arch=$ARCH] http://ports.ubuntu.com/ $CODENAME-updates multiverse \n\
             deb [arch=$ARCH] http://ports.ubuntu.com/ $CODENAME-backports main restricted universe multiverse \n' > $APTFILE"; fi
+        if [ $ARCH == i386 ]; then \
+          sudo sed -i 's/deb http/deb [arch=amd64,i386] http/g' /etc/apt/sources.list; \
+          sudo sed -i 's/deb mirror/deb [arch=amd64,i386] mirror/g' /etc/apt/sources.list; \
+        else \
+          sudo sed -i 's/deb http/deb [arch=amd64] http/g' /etc/apt/sources.list; \
+          sudo sed -i 's/deb mirror/deb [arch=amd64] mirror/g' /etc/apt/sources.list; \
+        fi
+        cat /etc/apt/sources.list
         sudo apt-get update || true
         sudo apt-get install \
             libstdc++6-$ARCH-cross \
